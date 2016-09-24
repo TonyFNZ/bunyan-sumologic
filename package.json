@@ -1,0 +1,40 @@
+{
+  "name": "bunyan-sumologic",
+  "version": "1.0.0",
+  "description": "SumoLogic stream for the Bunyan logger",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/_mocha",
+    "lint": "./node_modules/.bin/eslint **.js ./test/**.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TonyFNZ/bunyan-sumologic.git"
+  },
+  "keywords": [
+    "sumologic",
+    "bunyan"
+  ],
+  "engine": "4.0.0",
+  "author": {
+    "name": "Tony Fendall",
+    "email": "github@tonyfendall.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TonyFNZ/bunyan-sumologic/issues"
+  },
+  "homepage": "https://github.com/TonyFNZ/bunyan-sumologic#readme",
+  "devDependencies": {
+    "eslint": "^2.11.1",
+    "eslint-config-airbnb-base": "^3.0.1",
+    "eslint-plugin-import": "^1.8.1",
+    "mocha": "^3.0.2",
+    "require-subvert": "^0.1.0",
+    "should": "^11.1.0",
+    "sinon": "^1.17.6"
+  },
+  "dependencies": {
+    "request": "^2.75.0"
+  }
+}
