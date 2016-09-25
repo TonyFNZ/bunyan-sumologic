@@ -4,7 +4,6 @@
  *
  * Adapted from https://github.com/helix-collective/node-sumologic
  */
-const assert = require( 'assert' );
 const request = require( 'request' );
 
 
@@ -39,8 +38,9 @@ function safeRewriteLevel( obj ) {
 
 
 module.exports = function SumoLogger( opts ) {
-    assert( opts, 'SumoLogger requires opts to be passed' );
-    assert( opts.collector, 'SumoLogic collector key must be supplied' );
+    if ( !opts || !opts.collector ) {
+        throw new Error( 'SumoLogic collector key must be passed' );
+    }
 
     const endpoint = opts.endpoint || 'https://endpoint1.collection.us2.sumologic.com/receiver/v1/http/';
     const collectorEndpoint = endpoint + opts.collector;
