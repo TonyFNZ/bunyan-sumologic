@@ -1,6 +1,6 @@
 {
   "name": "bunyan-sumologic",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "SumoLogic stream for the Bunyan logger",
   "main": "index.js",
   "scripts": {
