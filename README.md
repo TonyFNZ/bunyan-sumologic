@@ -1,8 +1,14 @@
 # bunyan-sumologic
-SumoLogic stream for the Bunyan logger
+[SumoLogic](https://www.sumologic.com/) stream for the [Bunyan logger](https://github.com/trentm/node-bunyan)
+
+## Installation
+This module assumes you already have bunyan installed
+```
+npm install --save bunyan-sumologic
+```
 
 ## Usage
-```
+```javascript
 const bunyan = require('bunyan');
 const SumoLogger = require('bunyan-sumologic');
 
@@ -31,7 +37,7 @@ log.info('Hello World!');
 
 ## Configuration Options
 |Option|Description|
-|------|-----------|
+|:---|:---|
 | collector     | Collector ID for the HTTP collector configured in SumoLogic<br>This property is required. |
 | endpoint      | SumoLogic HTTP endpoint/region for your app<br>Default: `https://endpoint1.collection.us2.sumologic.com/receiver/v1/http/` |
 | syncInterval  | How often logs should be pushed to SumoLogic in milliseconds<br>Default: `1000` |
