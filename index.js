@@ -1,3 +1,5 @@
+'use strict'
+
 /**
  * Bunyan Log Stream compatible with SumoLogic
  * Sends logs directly to SumoLogic via the http endpoint
