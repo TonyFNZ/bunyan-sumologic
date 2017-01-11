@@ -1,11 +1,8 @@
 # bunyan-sumologic
+[![npm](https://img.shields.io/npm/v/bunyan-sumologic.svg)](https://www.npmjs.com/package/bunyan-sumologic) [![npm](https://img.shields.io/npm/dt/bunyan-sumologic.svg)](https://www.npmjs.com/package/bunyan-sumologic)
+
 [SumoLogic](https://www.sumologic.com/) stream for the [Bunyan logger](https://github.com/trentm/node-bunyan)
 
-## Installation
-This module assumes you already have bunyan installed
-```
-npm install --save bunyan-sumologic
-```
 
 ## Usage
 ```javascript
@@ -42,3 +39,9 @@ log.info('Hello World!');
 | endpoint      | SumoLogic HTTP endpoint/region for your app<br>Default: `https://endpoint1.collection.us2.sumologic.com/receiver/v1/http/` |
 | syncInterval  | How often logs should be pushed to SumoLogic in milliseconds<br>Default: `1000` |
 | rewriteLevels | Whether Bunyan log levels should be rewritten to be human readable.<br>Changes `30` to `INFO`, `40` to `WARN`, etc.<br>Default: `true` |
+
+## Installation
+This module assumes you already have bunyan installed
+```
+npm install --save bunyan-sumologic
+```
