@@ -6,41 +6,41 @@
 /* global afterEach */
 
 require( 'should' );
-const sinon = require( 'sinon' );
-const requireSubvert = require( 'require-subvert' )( __dirname );
+var sinon = require( 'sinon' );
+var requireSubvert = require( 'require-subvert' )( __dirname );
 
-let SumoLogger = require( '../index.js' );
-const defaultOpts = {
+var SumoLogger = require( '../index.js' );
+var defaultOpts = {
     collector: 'FAKE-COLLECTOR',
     rewriteLevels: false
 };
 
-describe( 'Bunyan SumoLogic Tests', () => {
-    let requestStub = null;
-    before( () => {
+describe( 'Bunyan SumoLogic Tests', function() {
+    var requestStub = null;
+    before( function() {
         // Intercept the request module used by bunyan-sumologic
         requestStub = sinon.stub();
         requireSubvert.subvert( 'request', requestStub );
         SumoLogger = requireSubvert.require( '../index.js' );
     } );
 
-    after( () => {
+    after( function() {
         requireSubvert.cleanUp();
     } );
 
-    let clock;
-    beforeEach( () => {
+    var clock;
+    beforeEach( function() {
         clock = sinon.useFakeTimers();
         requestStub.reset();
     } );
-    afterEach( () => {
+    afterEach( function() {
         clock.restore();
     } );
 
 
-    describe( 'Test Syncing Logic', () => {
-        it( 'Should not sync for first second', () => {
-            const logger = new SumoLogger( defaultOpts );
+    describe( 'Test Syncing Logic', function() {
+        it( 'Should not sync for first second', function() {
+            var logger = new SumoLogger( defaultOpts );
             logger.write( { level: 30, msg: 'log message' } );
 
             clock.tick( 1 );
@@ -49,8 +49,8 @@ describe( 'Bunyan SumoLogic Tests', () => {
             requestStub.called.should.not.be.true();
         } );
 
-        it( 'Should not sync if there\'s no log data', () => {
-            const logger = new SumoLogger( defaultOpts ); // eslint-disable-line no-unused-vars
+        it( 'Should not sync if there\'s no log data', function() {
+            var logger = new SumoLogger( defaultOpts ); // eslint-disable-line no-unused-vars
 
             clock.tick( 1000 );
             requestStub.called.should.be.false();
@@ -58,8 +58,8 @@ describe( 'Bunyan SumoLogic Tests', () => {
             requestStub.called.should.be.false();
         } );
 
-        it( 'Should only have one in progress request at any time', () => {
-            const logger = new SumoLogger( defaultOpts ); // eslint-disable-line no-unused-vars
+        it( 'Should only have one in progress request at any time', function() {
+            var logger = new SumoLogger( defaultOpts ); // eslint-disable-line no-unused-vars
             logger.write( { level: 30, msg: 'log message' } );
 
             // First call to request
@@ -71,9 +71,9 @@ describe( 'Bunyan SumoLogic Tests', () => {
             requestStub.calledOnce.should.be.true();
         } );
 
-        it( 'Should retry failed requests first', () => {
-            const logger = new SumoLogger( defaultOpts );
-            let expectedBody = null;
+        it( 'Should retry failed requests first', function() {
+            var logger = new SumoLogger( defaultOpts );
+            var expectedBody = null;
 
             function testFailedSync() {
                 clock.tick( 1000 );
@@ -96,15 +96,15 @@ describe( 'Bunyan SumoLogic Tests', () => {
         } );
 
 
-        it( 'Should treat non 200/300status codes as errors', () => {
-            const logger = new SumoLogger( defaultOpts );
-            let expectedBody = null;
+        it( 'Should treat non 200/300status codes as errors', function() {
+            var logger = new SumoLogger( defaultOpts );
+            var expectedBody = null;
 
             function testStatus( status ) {
                 clock.tick( 1000 );
                 const request = requestStub.lastCall.args[ 0 ];
                 request.body.should.deepEqual( expectedBody );
-                requestStub.callArgWith( 1, null, { status } ); // call callback function to complete request
+                requestStub.callArgWith( 1, null, { status: status } ); // call callback function to complete request
             }
 
 
@@ -121,13 +121,13 @@ describe( 'Bunyan SumoLogic Tests', () => {
             requestStub.callCount.should.equal( 4 );
         } );
 
-        it( 'Should handle happy case of syncing logs successfully in each cycle', () => {
-            const logger = new SumoLogger( defaultOpts );
+        it( 'Should handle happy case of syncing logs successfully in each cycle', function() {
+            var logger = new SumoLogger( defaultOpts );
 
-            let expectedBody = '';
+            var expectedBody = '';
 
             function logLine( level, msg ) {
-                const record = { level, msg };
+                var record = { level: level, msg: msg };
                 logger.write( record );
 
                 if ( expectedBody.length ) expectedBody += '\n';
@@ -160,47 +160,47 @@ describe( 'Bunyan SumoLogic Tests', () => {
     } );
 
 
-    describe( 'Test Configuration Options', () => {
-        it( 'Should require collector id to be passed', () => {
-            ( () => {
-                const logger = new SumoLogger( {} ); // eslint-disable-line no-unused-vars
+    describe( 'Test Configuration Options', function() {
+        it( 'Should require collector id to be passed', function() {
+            ( function() {
+                var logger = new SumoLogger( {} ); // eslint-disable-line no-unused-vars
             } ).should.throwError();
         } );
 
-        it( 'Should format the SumoLogic URL correctly', () => {
-            const logger = new SumoLogger( defaultOpts );
+        it( 'Should format the SumoLogic URL correctly', function() {
+            var logger = new SumoLogger( defaultOpts );
             logger.write( { level: 30, msg: 'log message' } );
 
             clock.tick( 1000 );
-            const request = requestStub.lastCall.args[ 0 ];
+            var request = requestStub.lastCall.args[ 0 ];
 
             request.method.should.equal( 'POST' );
-            request.url.should.equal( `https://endpoint1.collection.us2.sumologic.com/receiver/v1/http/${defaultOpts.collector}` );
+            request.url.should.equal( 'https://endpoint1.collection.us2.sumologic.com/receiver/v1/http/' + defaultOpts.collector );
         } );
 
-        it( 'Should allow overriding of SumoLogic endpoint URL', () => {
-            const opts = {
+        it( 'Should allow overriding of SumoLogic endpoint URL', function() {
+            var opts = {
                 collector: 'FAKE-COLLECTOR',
                 endpoint: 'http://fake-endpoint/'
             };
-            const logger = new SumoLogger( opts );
+            var logger = new SumoLogger( opts );
             logger.write( { level: 30, msg: 'log message' } );
 
             clock.tick( 1000 );
-            const request = requestStub.lastCall.args[ 0 ];
+            var request = requestStub.lastCall.args[ 0 ];
 
-            request.url.should.equal( `${opts.endpoint}${opts.collector}` );
+            request.url.should.equal( opts.endpoint + opts.collector );
         } );
 
-        it( 'Should rewrite level names correctly', () => {
-            const opts = { collector: defaultOpts.collector, rewriteLevels: true };
-            const logger = new SumoLogger( opts );
+        it( 'Should rewrite level names correctly', function() {
+            var opts = { collector: defaultOpts.collector, rewriteLevels: true };
+            var logger = new SumoLogger( opts );
 
             function testRewrite( input, expected ) {
                 logger.write( input );
                 clock.tick( 1000 );
 
-                const request = requestStub.lastCall.args[ 0 ];
+                var request = requestStub.lastCall.args[ 0 ];
                 request.body.should.deepEqual( expected );
                 requestStub.callArgWith( 1, null, { status: 200 } ); // call callback function to complete request successfully
             }
@@ -213,9 +213,9 @@ describe( 'Bunyan SumoLogic Tests', () => {
             testRewrite( { level: 60, msg: 'log message' }, '{"level":"FATAL","msg":"log message"}' );
         } );
 
-        it( 'Should rewrite level names by default', () => {
-            const opts = { collector: 'FAKE-COLLECTOR' }; // rewriteLevels is true by default
-            const logger = new SumoLogger( opts );
+        it( 'Should rewrite level names by default', function() {
+            var opts = { collector: 'FAKE-COLLECTOR' }; // rewriteLevels is true by default
+            var logger = new SumoLogger( opts );
 
             function testRewrite( input, expected ) {
                 logger.write( input );
@@ -229,9 +229,9 @@ describe( 'Bunyan SumoLogic Tests', () => {
             testRewrite( { level: 30, msg: 'log message' }, '{"level":"INFO","msg":"log message"}' );
         } );
 
-        it( 'Should allow syncInterval to be overridden', () => {
-            const opts = { collector: 'FAKE-COLLECTOR', syncInterval: 2000 };
-            const logger = new SumoLogger( opts );
+        it( 'Should allow syncInterval to be overridden', function() {
+            var opts = { collector: 'FAKE-COLLECTOR', syncInterval: 2000 };
+            var logger = new SumoLogger( opts );
             logger.write( { level: 30, msg: 'log message' } );
 
             clock.tick( 1000 );
@@ -242,16 +242,16 @@ describe( 'Bunyan SumoLogic Tests', () => {
     } );
 
 
-    describe( 'Test Internal Features', () => {
-        it( 'Should handle all types of input without error', () => {
-            const logger = new SumoLogger( defaultOpts );
+    describe( 'Test Internal Features', function() {
+        it( 'Should handle all types of input without error', function() {
+            var logger = new SumoLogger( defaultOpts );
 
             function testInput( input, expected ) {
-                const expectedBody = expected || JSON.stringify( input );
+                var expectedBody = expected || JSON.stringify( input );
                 logger.write( input );
                 clock.tick( 1000 );
 
-                const request = requestStub.lastCall.args[ 0 ];
+                var request = requestStub.lastCall.args[ 0 ];
                 request.body.should.deepEqual( expectedBody );
                 requestStub.callArgWith( 1, null, { status: 200 } ); // call callback function to complete request successfully
             }
@@ -260,26 +260,26 @@ describe( 'Bunyan SumoLogic Tests', () => {
             testInput( {} );
 
             // circular refs will confuse JSON.stringify, fallback to toString
-            const x = {};
+            var x = {};
             x.y = x;
             testInput( x, '"[object Object]"' );
 
             // Check errors in toString are handled
             function TestObj() { }
-            TestObj.prototype.toJSON = () => { throw new Error(); };
-            TestObj.prototype.toString = () => { throw new Error(); };
+            TestObj.prototype.toJSON = function() { throw new Error(); };
+            TestObj.prototype.toString = function() { throw new Error(); };
             testInput( new TestObj(), '"error serializing log line"' );
         } );
 
-        it( 'Should only output valid JSON', () => {
-            const logger = new SumoLogger( defaultOpts );
+        it( 'Should only output valid JSON', function() {
+            var logger = new SumoLogger( defaultOpts );
 
             function testJSON( input ) {
                 logger.write( input );
                 clock.tick( 1000 );
 
-                const request = requestStub.lastCall.args[ 0 ];
-                const parsed = JSON.parse( request.body );
+                var request = requestStub.lastCall.args[ 0 ];
+                var parsed = JSON.parse( request.body );
                 parsed.should.deepEqual( input );
                 requestStub.callArgWith( 1, null, { status: 200 } ); // call callback function to complete request successfully
             }
