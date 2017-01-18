@@ -1,5 +1,5 @@
 # bunyan-sumologic
-[![npm](https://img.shields.io/npm/v/bunyan-sumologic.svg)](https://www.npmjs.com/package/bunyan-sumologic) [![npm](https://img.shields.io/npm/dt/bunyan-sumologic.svg)](https://www.npmjs.com/package/bunyan-sumologic)
+[![npm](https://img.shields.io/npm/v/bunyan-sumologic.svg)](https://www.npmjs.com/package/bunyan-sumologic) [![npm](https://img.shields.io/npm/dt/bunyan-sumologic.svg)](https://npm-stat.com/charts.html?package=bunyan-sumologic)
 
 [SumoLogic](https://www.sumologic.com/) stream for the [Bunyan logger](https://github.com/trentm/node-bunyan)
 
