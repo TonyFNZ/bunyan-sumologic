@@ -15,7 +15,7 @@
     "sumologic",
     "bunyan"
   ],
-  "engine": "4.0.0",
+  "engine": "0.10.32",
   "author": {
     "name": "Tony Fendall",
     "email": "github@tonyfendall.com"
