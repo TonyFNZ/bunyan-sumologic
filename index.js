@@ -48,6 +48,7 @@ module.exports = function SumoLogger( opts ) {
     const collectorEndpoint = endpoint + opts.collector;
     const syncInterval = opts.syncInterval || 1000;
     const maxLines = opts.maxLines || 100;
+    let onEnd = false;
 
     let rewriteLevels = true;
     if ( opts.rewriteLevels !== undefined ) {
@@ -68,7 +69,16 @@ module.exports = function SumoLogger( opts ) {
 
         unsynced.push( safeToString( record ) );
     };
-
+    
+    /**
+     * `end` function will run the callback after the sync queue is empty
+     */
+    this.end = ( cb ) => {
+        if ( unsynced.length === 0 ) {
+            return cb();
+        }
+        onEnd = cb;        
+    };
 
     let numBeingSent = 0;
 
@@ -100,7 +110,18 @@ module.exports = function SumoLogger( opts ) {
             if ( !failed ) {
                 unsynced.splice( 0, numBeingSent );
             }
+            
             numBeingSent = 0;
+            
+            if ( onEnd ) {
+                // if we are failing to log we are not going to wait
+                if ( failed ) {
+                    onEnd(error);
+                } else if ( unsynced.length === 0 ) {
+                    onEnd(null);
+                }
+                onEnd = false;
+            }
         } );
     }
     setInterval( syncLogsToSumo, syncInterval );
