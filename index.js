@@ -69,15 +69,15 @@ module.exports = function SumoLogger( opts ) {
 
         unsynced.push( safeToString( record ) );
     };
-    
+
     /**
      * `end` function will run the callback after the sync queue is empty
      */
     this.end = ( cb ) => {
         if ( unsynced.length === 0 ) {
-            return cb();
+            return cb( null );
         }
-        onEnd = cb;        
+        onEnd = cb;
     };
 
     let numBeingSent = 0;
@@ -110,15 +110,15 @@ module.exports = function SumoLogger( opts ) {
             if ( !failed ) {
                 unsynced.splice( 0, numBeingSent );
             }
-            
+
             numBeingSent = 0;
-            
+
             if ( onEnd ) {
                 // if we are failing to log we are not going to wait
                 if ( failed ) {
-                    onEnd(error);
+                    onEnd( error );
                 } else if ( unsynced.length === 0 ) {
-                    onEnd(null);
+                    onEnd( null );
                 }
                 onEnd = false;
             }
