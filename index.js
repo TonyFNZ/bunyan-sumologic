@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 /**
  * Bunyan Log Stream compatible with SumoLogic
@@ -78,6 +78,7 @@ module.exports = function SumoLogger( opts ) {
             return cb( null );
         }
         onEnd = cb;
+        return false;
     };
 
     let numBeingSent = 0;
