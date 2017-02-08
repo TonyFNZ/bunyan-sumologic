@@ -17,11 +17,13 @@ const defaultOpts = {
 
 describe( 'Bunyan SumoLogic Tests', () => {
     let requestStub = null;
+    let onEndCallbackSpy = null;
     before( () => {
         // Intercept the request module used by bunyan-sumologic
         requestStub = sinon.stub();
         requireSubvert.subvert( 'request', requestStub );
         SumoLogger = requireSubvert.require( '../index.js' );
+        onEndCallbackSpy = sinon.spy();
     } );
 
     after( () => {
@@ -32,6 +34,7 @@ describe( 'Bunyan SumoLogic Tests', () => {
     beforeEach( () => {
         clock = sinon.useFakeTimers();
         requestStub.reset();
+        onEndCallbackSpy.reset();
     } );
     afterEach( () => {
         clock.restore();
@@ -287,6 +290,45 @@ describe( 'Bunyan SumoLogic Tests', () => {
             testJSON( 'msg 1' );
             testJSON( { some: 'values', and: 'keys' } );
             testJSON( [ 1, 2, 3, 4 ] );
+        } );
+    } );
+
+
+    describe( 'Test End Method ', () => {
+        it( 'Should call end callback immeditely if there are no pending requests', () => {
+            const logger = new SumoLogger( defaultOpts );
+
+            logger.end( onEndCallbackSpy );
+
+            onEndCallbackSpy.calledOnce.should.equal( true );
+            onEndCallbackSpy.calledWith( null ).should.equal( true );
+        } );
+
+        it( 'Should call end only after request completes', () => {
+            const logger = new SumoLogger( defaultOpts );
+
+            logger.write( 'msg 1' );
+            logger.end( onEndCallbackSpy );
+            clock.tick( 1000 );
+
+            onEndCallbackSpy.calledOnce.should.equal( false );
+            requestStub.callArgWith( 1, null, { status: 200 } );
+            onEndCallbackSpy.calledOnce.should.equal( true );
+            onEndCallbackSpy.calledWith( null ).should.equal( true );
+        } );
+
+        it( 'Should call end with error from pending request', () => {
+            const logger = new SumoLogger( defaultOpts );
+            const error = new Error( 'some error' );
+
+            logger.write( 'msg 1' );
+            logger.end( onEndCallbackSpy );
+            clock.tick( 1000 );
+
+            onEndCallbackSpy.calledOnce.should.equal( false );
+            requestStub.callArgWith( 1, error );
+            onEndCallbackSpy.calledOnce.should.equal( true );
+            onEndCallbackSpy.calledWith( error ).should.equal( true );
         } );
     } );
 } );
