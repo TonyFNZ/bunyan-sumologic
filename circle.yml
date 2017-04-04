@@ -1,0 +1,12 @@
+machine:
+  node:
+    version: 6.1.0
+
+test:
+  pre:
+    - eslint **.js ./test/**.js
+
+  override:
+    - mocha --reporter mocha-circleci-reporter test:
+        environment:
+          MOCHA_FILE: $CIRCLE_TEST_REPORTS/mocha.xml
