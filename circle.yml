@@ -4,10 +4,9 @@ machine:
 
 test:
   pre:
-    - mkdir -p $CIRCLE_TEST_REPORTS/reports
-    - eslint **.js ./test/**.js --format junit --output-file $CIRCLE_TEST_REPORTS/reports/eslint.xml
+    - eslint **.js ./test/**.js
 
   override:
-    - mocha test --reporter mocha-junit-reporter:
+    - mocha --reporter mocha-circleci-reporter test:
         environment:
-          MOCHA_FILE: $CIRCLE_TEST_REPORTS/junit/test-results.xml
+          MOCHA_FILE: $CIRCLE_TEST_REPORTS/mocha.xml
