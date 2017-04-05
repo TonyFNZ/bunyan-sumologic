@@ -125,5 +125,5 @@ module.exports = function SumoLogger( opts ) {
             }
         } );
     }
-    setInterval( syncLogsToSumo, syncInterval );
+    setInterval( syncLogsToSumo, syncInterval + 0 );
 };
