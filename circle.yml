@@ -5,8 +5,9 @@ machine:
 test:
   pre:
     - eslint **.js ./test/**.js
-
   override:
-    - mocha --reporter mocha-circleci-reporter test:
+    - nyc mocha --reporter mocha-circleci-reporter test:
         environment:
           MOCHA_FILE: $CIRCLE_TEST_REPORTS/mocha.xml
+  post:
+    - nyc check-coverage --branches 90 --functions 90 --lines 90 --statements 90
