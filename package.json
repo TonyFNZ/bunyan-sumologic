@@ -31,6 +31,7 @@
     "eslint-plugin-import": "^1.8.1",
     "mocha": "^3.0.2",
     "mocha-circleci-reporter": "0.0.2",
+    "nyc": "^10.2.0",
     "require-subvert": "^0.1.0",
     "should": "^11.1.0",
     "sinon": "^1.17.6"
